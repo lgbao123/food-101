@@ -5,4 +5,4 @@ plotly
 requests
 streamlit
 streamlit_option_menu
-tensorflow
+tensorflow==2.9.2
