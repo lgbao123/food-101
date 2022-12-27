@@ -1,0 +1,13 @@
+keras==2.11.0
+keras_nightly==2.12.0.dev2022112308
+matplotlib==3.6.2
+numpy==1.22.4
+pandas==1.5.1
+Pillow==9.3.0
+plotly==5.11.0
+requests==2.28.1
+streamlit==1.14.1
+streamlit_option_menu==0.3.2
+tensorflow==2.11.0
+~atplotlib==3.6.1
+~ensorflow_gpu==2.10.0
