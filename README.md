@@ -17,6 +17,8 @@ FoodVision is an end-to-end CNN Image Classification Model which identifies the 
    ```
 3. Install packages
    ```sh
+   python -m venv venv
+   venv\Scripts\activate
    pip install -r requirements.txt
    ```
 4. Run app
