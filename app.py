@@ -312,9 +312,9 @@ if selected == "Projects":
     #     st.image([image3],use_column_width=True)
     st.image([pre_image])
     model_selected = st.selectbox("Select Your Model: ",
-                                  ['2 Classes', '10 Classes', '101 Classes (final model)'])
+                                  ['2 Classes (Simple Convolutional)', '10 Classes (EfficientNet-B0)', '101 Classes (EfficientNet-B1)'])
 
-    if model_selected == '2 Classes':
+    if model_selected == '2 Classes (Simple Convolutional)':
 
         model_1 = returnModel()
         st.header("Summary model : ")
@@ -326,7 +326,7 @@ if selected == "Projects":
                                allow_pickle='TRUE').item()
         fig = plotHistory(history_load)
         st.write(fig)
-    if model_selected == '10 Classes':
+    if model_selected == '10 Classes (EfficientNet-B0)':
         model_1 = returnModel(select=2)
         st.header("Summary model : ")
         model_1.summary(print_fn=lambda x: st.text(x))
@@ -337,7 +337,7 @@ if selected == "Projects":
                                allow_pickle='TRUE').item()
         fig = plotHistory(history_load)
         st.write(fig)
-    if model_selected == '101 Classes (final model)':
+    if model_selected == '101 Classes (EfficientNet-B1)':
         model_1 = returnModel(select=3)
         st.header("Summary model : ")
         model_1.summary(print_fn=lambda x: st.text(x))
