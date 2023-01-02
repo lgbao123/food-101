@@ -10,6 +10,8 @@ import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import time
+import matplotlib.pyplot as plt
+from math import floor, log10
 # @st.cache(suppress_st_warning=True)
 def predicting(image, model):
     image = load_and_prep(image)
@@ -71,52 +73,23 @@ def plotFoodInfo(namefood):
         f"You can check out this [link](https://www.nutritionix.com/food/{urlname})")
 
 
-def plotPrediction(labels, values):
-    y_saving = values
-    x = labels
-
-    fig = go.Figure()
-    fig.add_trace(go.Bar(
-        x=values,
-        y=labels,
-        marker=dict(
-            color='rgba(50, 171, 96, 0.6)',
-            line=dict(
-                color='rgba(50, 171, 96, 1.0)',
-                width=1),
-        ),
-        orientation='h',
-    ))
-    fig.update_layout(
-        title='<b>Top 5 Predictions</b>',
-        yaxis=dict(
-            showgrid=False,
-            showline=False,
-            showticklabels=True,
-            # domain=[0, 0.85],
-            tickfont=dict(size=15),
-        ),
-        xaxis_title="Percentage of prediction",
-        paper_bgcolor='rgb(248, 248, 255)',
-        plot_bgcolor='rgb(248, 248, 255)',
-        margin_pad=10,
-    )
-
-    annotations = []
-
-    y_s = np.round(y_saving, decimals=2)
-
-    # Adding labels
-    for yd, xd in zip(y_s, x):
-        annotations.append(dict(xref='x1', yref='y1',
-                                y=xd, x=yd + 6,
-                                text=str(yd) + '%',
-                                font=dict(family='Arial', size=16,
-                                          color='rgb(50, 171, 96)'),
-                                showarrow=False))
-
-    fig.update_layout(annotations=annotations)
-    st.write(fig)
+def plotPrediction(df_output):
+    df_output = df[['Top 5 Predictions', 'Scores']].sort_values(
+                        'Scores', ascending=True)
+    labels =df_output['Top 5 Predictions'].to_numpy()
+    values =df_output['Scores'].to_list()
+    fig, ax = plt.subplots()
+    ax.grid(False)
+    ax.set_xlim(0, 1)
+    ax.set_xticks([x for x in range(0,110, 10)])
+    #ax.set_xticklabels(['Low','Average','High'])
+    ax.tick_params(axis='y', labelcolor='r', which='major', labelsize=8)
+    hbars= ax.barh(labels, values)
+    ax.set_xlabel('Confidence (in percent)', fontsize=13)
+    ax.set_title('Top 5 Predictions', fontsize=15)
+    ax.bar_label(hbars, label_type="edge",fmt='%.2f%%')
+    # ax.set_xlim(right=2)
+    st.pyplot(fig)
 
 
 def plotHistory(history_load):
@@ -265,11 +238,17 @@ if selected == "Home":
                     st.write("Took {} seconds to run.".format(
                         round(time.time() - start_time, 3)))
                     pred_class = pred_class.replace("_", " ")
-                    st.write(df[['Top 5 Predictions', 'Scores']].sort_values(
-                        'Scores', ascending=False))
+                    df_output = df[['Top 5 Predictions', 'Scores']].sort_values(
+                        'Scores', ascending=False)
+                    # st.write(df_output)
                     
-                    plotPrediction(df['Top 5 Predictions'].to_numpy(),
-                                df['Scores'].to_numpy())
+                    
+                    # df_output["Scores"] = df_output["Scores"].apply(lambda x: round(x, max(1, - int(floor(log10(abs(x)))))))
+                    # df_output.Scores = df_output.Scores.round(2)
+                    decimals = 2  
+                    df_output['Scores'] = df_output['Scores'].apply(lambda x: round(x, decimals))
+                    st.write(df_output )
+                    plotPrediction(df_output)
                     plotFoodInfo(pred_class)
 if selected == "Projects":
     st.title(f"Multiclass Classification using TensorFlow 2.0 on Food-101 Dataset")
